@@ -11,8 +11,6 @@ ssl_context.check_hostname = False
 ssl_context.verify_mode = ssl.CERT_NONE
 
 BASE_URL = "https://www.cifraclub.com"
-# LIST_URL = f"{BASE_URL}/musico/551928421/repertorio/favoritas/" # Yo
-LIST_URL = "https://www.cifraclub.com/musico/552807671/repertorio/favoritas/"  # Short
 
 async def fetch(session: aiohttp.ClientSession, url: str) -> Optional[str]:
     async with session.get(url, ssl=ssl_context) as response:
@@ -85,9 +83,9 @@ def write_to_file(filename: str, song_details: list[str]) -> None:
     with open(filename, "w") as file:
         file.write(html)
 
-async def scrape_songs() -> None:
+async def scrape_songs(list_url: str) -> None:
     async with aiohttp.ClientSession() as session:
-        songs_links = await get_songs_links_in_list(session, LIST_URL)
+        songs_links = await get_songs_links_in_list(session, list_url)
         tasks = [scrape_song_details(session, song_url) for song_url in songs_links]
 
         song_details = await asyncio.gather(*tasks)
@@ -96,7 +94,8 @@ async def scrape_songs() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(scrape_songs())
+    list_url = input("Enter the list url: ")
+    asyncio.run(scrape_songs(list_url))
     options = {
         'page-size': 'Letter',
         'margin-top': '0.75in',
@@ -110,4 +109,7 @@ if __name__ == "__main__":
     try:
         from_file("songs.html", "songs.pdf", options=options)
     except OSError:
-        print("ProtocolInvalidOperationError ignore")
+        # I don't really know why this exception happens, i think it's something
+        # about external links, but i really don't care that much, it generates
+        # the file anyway
+        pass
