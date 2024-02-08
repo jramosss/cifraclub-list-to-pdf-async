@@ -1,9 +1,11 @@
 import shutil
 from contextlib import asynccontextmanager
 from os import mkdir, path
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pdfkit import from_string
 
@@ -24,6 +26,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.mount(
+    "/static",
+    StaticFiles(directory=Path(__file__).parent.absolute() / "static"),
+    name="static",
+)
 
 @app.get("/")
 async def root(request: Request):

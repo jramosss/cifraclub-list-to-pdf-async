@@ -29,5 +29,5 @@ def add_css_styles(html_string: str, css_file_path: str) -> str:
 
 def get_html(song_details: list[str]):
     html = get_as_html(list(map(str, song_details)))
-    html = add_css_styles(html, "./public/style.css")
+    html = add_css_styles(html, "./public/cifraclub_style.css")
     return html
