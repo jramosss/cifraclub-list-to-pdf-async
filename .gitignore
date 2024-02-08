@@ -1,4 +1,3 @@
 .venv
-*.pdf
-*.html
 __pycache__/
+tmp

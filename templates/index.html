@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #container {
+            margin-top: 100px;
+        }
+        #download-btn {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>Generate File</h2>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="generateBtn">Generate</button>
+        <br>
+        <a href="#" download id="download-btn"><button>Download File</button></a>
+    </div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            var url = document.getElementById('urlInput').value;
+            fetch(`/generate/?list_url=${url}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ list_url: url })
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var downloadBtn = document.getElementById('download-btn');
+                downloadBtn.href = url;
+                downloadBtn.style.display = 'inline-block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating file');
+            });
+        });
+    </script>
+</body>
+</html>
