@@ -33,7 +33,7 @@ def sanitize_song_link(song_url: str) -> str:
         song_url = song_url[:-5]
     if not song_url.endswith('/'):
         song_url += "/"
-    song_url += "imprimir.html#columns=true"
+    song_url += "imprimir.html"
 
     return song_url
 
